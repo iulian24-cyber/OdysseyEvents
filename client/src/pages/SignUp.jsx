@@ -109,7 +109,6 @@ function SignUp() {
                     <span style={{ fontSize: 13 }}>I agree to the terms and privacy policy</span>
                 </label>
 
-                {/* new: interest selection box (before create account button) */}
                 <div className="interest-box" aria-label="Select interests">
                     <div className="interest-label">Select interests</div>
                     <div className="interest-buttons">

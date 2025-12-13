@@ -5,37 +5,27 @@ html, body, #root {
     box-sizing: border-box;
 }
 
-/* ensure the React mount node centers its children */
-#root {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
-
 *, *::before, *::after {
     box-sizing: inherit;
 }
 
 body {
     display: flex;
-    align-items: center;    /* vertical centering */
-    justify-content: center;/* horizontal centering */
-    height: 100vh;          /* ensure full viewport height */
+    align-items: center;    
+    justify-content: center;
+    height: 100vh;          
     margin: 0;
-    padding: 2rem;          /* optional spacing on small screens */
-    background: #111;       /* optional */
+    background: #111;      
 }
 
 input{
     background-color: #222;
 }
 
-/* Prevent the form from escaping the viewport */
 .signin-container {
     max-width: 420px;
     width: 60vw;
-    height: auto;       /* changed from 100% so it won't stretch to full width */
+    height: auto;      
     margin: 0;
     padding: 28px;          
     border-radius: 10px;
@@ -46,7 +36,6 @@ input{
     max-height: calc(100vh - 4rem);
 }
 
-/* use fixed spacing instead of large % values */
 .signin-title {
     text-align: center;
     margin-bottom: 3rem;
@@ -57,7 +46,7 @@ input{
 .signin-form {
     display: flex;
     flex-direction: column;
-    height: 70%;   /* uses the .signin-container height (60vh) */
+    height: 70%;   
     gap: 0.75rem;
 }
 

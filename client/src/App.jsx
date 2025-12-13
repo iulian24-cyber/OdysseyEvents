@@ -1,48 +1,49 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import './App.css'
-
-// function App() {
-//   const [count, setCount] = useState(0)
-
-//   return (
-//     <>
-//       <div>
-//         <a href="https://vite.dev" target="_blank">
-//           <img src={viteLogo} className="logo" alt="Vite logo" />
-//         </a>
-//         <a href="https://react.dev" target="_blank">
-//           <img src={reactLogo} className="logo react" alt="React logo" />
-//         </a>
-//       </div>
-//       <h1>Vite + React</h1>
-//       <div className="card">
-//         <button onClick={() => setCount((count) => count + 1)}>
-//           count is {count}
-//         </button>
-//         <p>
-//           Edit <code>src/App.jsx</code> and save to test HMR
-//         </p>
-//       </div>
-//       <p className="read-the-docs">
-//         Click on the Vite and React logos to learn more
-//       </p>
-//     </>
-//   )
-// }
-
-// export default App
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useAuth } from './context/AuthContext'
 import './App.css'
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import Home from './pages/Home';
+import CreateEvent from './pages/CreateEvent';
+import AccountSettings from './pages/AccountSettings';
 
 function App(){
-    return(
-      SignUp()
-    )
+  const normalizeHash = () => {
+    const h = window.location.hash || '#/home';
+    // normalize to /page (no hash)
+    return h.replace(/^#/, '');
+  };
+
+  const [page, setPage] = useState(normalizeHash());
+
+  useEffect(() => {
+    const onHashChange = () => setPage(normalizeHash());
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  const { user } = useAuth();
+
+  // protect create event page: only moderators can view
+  if (page === '/create' && user?.role !== 'moderator') {
+    // redirect back to home
+    window.location.hash = '#/home';
+    return <Home />;
+  }
+
+  switch (page) {
+    case '/signup':
+      return <SignUp />;
+    case '/create':
+      return <CreateEvent />;
+    case '/account':
+      return <AccountSettings />;
+    case '/signin':
+      return <SignIn />;
+    case '/home':
+    default:
+      return <Home />;
+  }
 }
 
 export default App;

@@ -1,47 +1,72 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from './context/AuthContext'
-import './App.css'
-import SignIn from './pages/SignIn';
-import SignUp from './pages/SignUp';
-import Home from './pages/Home';
-import CreateEvent from './pages/CreateEvent';
-import AccountSettings from './pages/AccountSettings';
+import { useState, useEffect } from "react";
+import { useAuth } from "./context/AuthContext";
+import "./App.css";
 
-function App(){
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import Home from "./pages/Home";
+import CreateEvent from "./pages/CreateEvent";
+import AccountSettings from "./pages/AccountSettings";
+
+function App() {
+  const { user, loading } = useAuth();
+
   const normalizeHash = () => {
-    const h = window.location.hash || '#/home';
-    // normalize to /page (no hash)
-    return h.replace(/^#/, '');
+    const h = window.location.hash;
+    if (!h) return user ? "/home" : "/signin";
+    return h.replace(/^#/, "");
   };
 
-  const [page, setPage] = useState(normalizeHash());
+  const [page, setPage] = useState(normalizeHash);
 
   useEffect(() => {
     const onHashChange = () => setPage(normalizeHash());
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, [user]);
 
-  const { user } = useAuth();
+  // ⏳ Wait until auth is restored
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  // protect create event page: only moderators can view
-  if (page === '/create' && user?.role !== 'moderator') {
-    // redirect back to home
-    window.location.hash = '#/home';
+  const publicPages = ["/signin", "/signup"];
+  const isPublic = publicPages.includes(page);
+
+  // 🔐 Auth guard
+  if (!user && !isPublic) {
+    window.location.hash = "#/signin";
+    return <SignIn />;
+  }
+
+  // 🔒 Moderator-only pages (ACCESS control only)
+  if (page === "/create" && user?.role !== "moderator") {
+    window.location.hash = "#/home";
     return <Home />;
   }
 
-  switch (page) {
-    case '/signup':
-      return <SignUp />;
-    case '/create':
-      return <CreateEvent />;
-    case '/account':
-      return <AccountSettings />;
-    case '/signin':
+  // 🧭 ROUTING — NO ROLE-BASED REDIRECTS HERE
+  switch (true) {
+    case page === "/signin":
       return <SignIn />;
-    case '/home':
+
+    case page === "/signup":
+      return <SignUp />;
+
+    case page === "/home":
+      return <Home />;
+
+    case page === "/create":
+      return <CreateEvent />;
+
+    case page.startsWith("/edit/"):
+      return <CreateEvent editId={page.split("/edit/")[1]} />;
+
+    case page === "/account":
+      return <AccountSettings />;
+
     default:
+      window.location.hash = "#/home";
       return <Home />;
   }
 }

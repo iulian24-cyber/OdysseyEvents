@@ -1,0 +1,331 @@
+:root {
+    --nav-height: 90px;            /* use a stable px value instead of vh */
+    --content-max-width: 1200px;   /* content container width */
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 80%;
+    box-sizing: border-box;
+    background-color: #333;
+    padding-top: var(--nav-height); /* reserve space for fixed nav */
+}
+
+.nav_bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--nav-height);
+    grid-template-columns: 1fr auto 1fr;
+    background-color: #333;
+    color: #fff;
+    display: grid;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 10px 20px #000000af;
+    z-index: 1000;
+}
+
+.logo {
+    justify-self: start;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.nav_buttons {
+    display: flex;
+    justify-self: center;
+    display: flex;
+    gap: 5vw;
+}
+
+.nav_button{
+    display: flex;
+    width: 10vw;    
+    justify-content: center;
+    background: #333;
+    font-size: medium;
+    font-weight: 600;
+    text-shadow: #000000 0px 0px 18px;
+    transition: 0.5s;
+}
+
+.nav_button:hover {
+    background: #5100d4;
+    border-color: #5100d4;
+    filter: drop-shadow(0 0 10px #5100d4);
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.account_button {
+    justify-self: end;
+    width: 5vh;
+    height: 5vh;
+    border-radius: 50%;
+    background-color: #555;
+    cursor: pointer;
+}
+
+.account_button:focus {
+    box-shadow: 0 0 0 3px rgba(81,0,212,0.18);
+}
+
+.account_panel {
+    position: fixed;
+    /* position it under the nav bar on the right */
+    top: 64px; /* adjust if your header is taller */
+    right: 20px;
+    width: 240px;
+    background: #222;
+    color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0,0,0,0.06);
+    padding: 8px;
+    transform: translateY(-8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 180ms ease;
+    z-index: 1200;
+}
+
+.account_panel.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.account_item {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+}
+.account_item:hover {
+    background: rgba(0,0,0,0.04);
+}
+.account_item.logout {
+    color: #883eff;
+}
+
+.account_item.add {
+    background: var(--accent, #4100a9);
+    color: #fff;
+    border-radius: 6px;
+}
+
+.account_panel hr {
+    border: none;
+    border-top: 1px solid #c4c4c4ff;
+    margin: 6px 0;
+}
+
+.events-container {
+    width: 100%;
+    max-width: var(--content-max-width);
+    margin: 24px auto; 
+    padding: 24px;
+    background-color: #333;
+    color: #fff;
+    box-sizing: border-box;
+    font-size: 24px;
+    display: block; 
+    min-height: calc(100vh - var(--nav-height));
+}
+
+.events-grid {
+    display: grid;
+    grid-auto-rows: auto;
+    gap: 6vh;
+    width: 100%;
+    margin: 0;
+    padding: 8px 0;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.event-card {
+    position: relative;
+    background: #222;
+    width: 60vw;
+    color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    will-change: opacity, transform;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+.event-image {
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
+}
+
+.event-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.placeholder {
+    color: #666;
+    font-weight: 600;
+}
+
+.event-meta {
+    padding: 12px;
+    
+}
+
+.event-title {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+}
+
+.event-info {
+    color: #666;
+    font-size: 13px;
+}
+
+.event-subject {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 12px;
+    padding: 1%;
+    background-color: #222;
+    color: #888;
+}
+
+.event-description {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.72), rgba(0,0,0,0.78));
+    color: #fff;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+    z-index: 20;
+}
+
+.desc-container {
+    flex: 1 1 auto;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    overflow: hidden;
+    padding-bottom: 12px;
+}
+
+.event-description .desc-inner {
+    max-height: 100%;
+    overflow: auto;
+    font-size: 14px;
+    line-height: 1.45;
+    width: 100%;
+}
+
+.desc-actions {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding-top: 8px;
+    gap: 8px;
+}
+
+.join-btn {
+    background: var(--accent, #4100a9);
+    color: #fff;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 18px #5100d456;
+}
+
+.join-btn:hover {
+    filter: brightness(0.95);
+}
+
+.event-card:hover .event-description,
+.event-card:focus-within .event-description,
+.event-card:focus .event-description {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.event-card:hover {
+    transform: translateY(-4px);
+}
+
+body{
+    height: fit-content;
+}
+
+@media (max-width: 540px) {
+    .account_panel {
+        right: 12px;
+        width: 200px;
+        top: 56px;
+    }
+
+    .nav_buttons {
+        display: flex;
+        justify-self: center;
+        display: flex;
+        gap: 10vw;
+    }
+
+    .nav_button{
+        display: flex;
+        width: 10vw;    
+        justify-content: center;
+        background: #333;
+        font-size: 10px;
+        font-weight: 600;
+        text-shadow: #000000 0px 0px 18px;
+        transition: 0.5s;
+    }
+
+    .event-description {
+        padding: 12px;
+    }
+    .event-description .desc-inner {
+        max-height: 60%;
+        font-size: 13px;
+    }
+}

@@ -1,0 +1,146 @@
+html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    display: flex;
+    align-items: center;    
+    justify-content: center;
+    height: 100vh;          
+    margin: 0;
+    background: #111;      
+}
+
+input{
+    background-color: #222;
+}
+
+.signin-container {
+    max-width: 420px;
+    width: 60vw;
+    height: auto;      
+    margin: 0;
+    padding: 28px;          
+    border-radius: 10px;
+    background: #303030;
+    box-shadow:  10px 10px #5100d4;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    overflow: auto;
+    max-height: calc(100vh - 4rem);
+}
+
+.signin-title {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.signin-form {
+    display: flex;
+    flex-direction: column;
+    height: 70%;   
+    gap: 0.75rem;
+}
+
+.signin-label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 14px;
+    color: #ddd;
+}
+
+.signin-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #cfcfcf;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.signin-input:focus {
+    outline: none;
+    border-color: #5100d4;
+    box-shadow: 0 0 0 3px rgba(0,120,212,0.08);
+}
+
+.signin-error {
+    color: #c02;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.signin-button {
+    width: 100%;
+    padding: 10px;
+    background: #5100d4;
+    margin-top: 5vh;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background .12s;
+    align-self: flex-start;
+}
+
+.signin-button:hover {
+    background: #4100a9;
+}
+
+.interest-box {
+    margin: 12px 0;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.interest-label {
+    font-size: 13px;
+    color: #ddd;
+    margin-bottom: 8px;
+}
+
+.interest-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.interest-btn {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: transparent;
+    color: #eee;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background .12s, color .12s, transform .06s;
+}
+
+.interest-btn:hover {
+    transform: translateY(-1px);
+}
+
+.interest-btn.selected {
+    background: linear-gradient(90deg, #4100a9, #5100d4);
+    color: #fff;
+    border-color: transparent;
+}
+
+.interest-hint {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #aaa;
+}

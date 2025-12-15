@@ -1,0 +1,70 @@
+p {
+    margin: 0;
+}
+
+.create-event-container {
+    margin-top: var(--nav-height);
+    display: flex;
+    width: 50%;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #222;
+    min-height: 100vh;
+    min-width: 70%;
+}
+
+.create-event-label {
+    display: flex;
+    flex-direction: column;
+    padding: 50px, 0;
+}
+
+.create-event-banner {
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    margin: 20px auto;
+}
+
+.create-event-input, .create-event-textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 5px 0;
+    border: 1px solid #cfcfcf;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.create-event-textarea {
+    min-height: 20%;
+    background-color: #222;
+}
+
+.banner-preview {
+    display: block;            
+    width: 100%;               
+    max-width: 600px;          
+    max-height: 300px;         
+    height: auto;              
+    object-fit: cover;         
+    border-radius: 8px;
+    margin: 12px auto;
+}
+
+.create-event-submit-btn {
+    background: var(--accent, #4100a9);
+    color: #fff;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 18px #5100d456;
+}
+
+.create-event-submit-btn:hover {
+    filter: brightness(0.95);
+}

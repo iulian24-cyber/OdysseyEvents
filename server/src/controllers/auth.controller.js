@@ -2,6 +2,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
+/* =======================
+   SIGN UP
+======================= */
 export const signup = async (req, res) => {
   const { username, email, password, categories } = req.body;
 
@@ -29,7 +32,9 @@ export const signup = async (req, res) => {
   });
 };
 
-
+/* =======================
+   LOGIN
+======================= */
 export const login = async (req, res) => {
   const { identifier, password } = req.body;
 
@@ -72,3 +77,50 @@ export const login = async (req, res) => {
   });
 };
 
+/* =======================
+   UPDATE CURRENT USER
+======================= */
+export const updateMe = async (req, res) => {
+  try {
+    const { username, email, password, preferredCategories } = req.body;
+
+    // req.user.id comes from JWT payload (protect middleware)
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    // update allowed fields only
+    if (username !== undefined) user.username = username;
+    if (email !== undefined) user.email = email;
+
+    if (Array.isArray(preferredCategories)) {
+      user.preferredCategories = preferredCategories;
+    }
+
+    // update password ONLY if provided
+    if (password) {
+      const hashed = await bcrypt.hash(password, 10);
+      user.password = hashed;
+    }
+
+    await user.save();
+
+    // respond WITHOUT password
+    res.json({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      preferredCategories: user.preferredCategories
+    });
+  } catch (err) {
+    console.error("UpdateMe error:", err);
+    res.status(500).json({
+      message: "Failed to update account"
+    });
+  }
+};

@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   preferredCategories: {
     type: [String],
     default: []
-  }
-});
+  },
+},{ timestamps: true });
 
 export default mongoose.model("User", userSchema);

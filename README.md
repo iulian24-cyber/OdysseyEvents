@@ -2,14 +2,10 @@
 
 Acces our app via https://odysseyevents.onrender.com/
 
-------------------------------------------------------------------------
-
 # 🌌 OdysseyEvents -- MERN Web Application
 
 A modern, responsive event‑browsing platform built with the MERN stack
 (MongoDB, Express, React, Node.js) and deployed on Render.
-
-------------------------------------------------------------------------
 
 ## 🚀 Overview
 
@@ -17,8 +13,6 @@ OdysseyEvents allows users to explore upcoming events while moderators
 can create and manage them.\
 Features include authentication, category filtering, event overlays, and
 mobile responsiveness.
-
-------------------------------------------------------------------------
 
 ## 🧩 Tech Stack
 
@@ -44,8 +38,6 @@ mobile responsiveness.
 -   MongoDB Atlas\
 -   Mongoose models
 
-------------------------------------------------------------------------
-
 ## 🔐 Authentication & Security
 
 ### Password Hashing
@@ -57,8 +49,6 @@ All passwords hashed using **bcrypt** before database storage.
 -   Short‑lived access tokens\
 -   Sent in Authorization header\
 -   Verified on every protected route
-
-------------------------------------------------------------------------
 
 ## 🗂 Project Structure
 
@@ -87,8 +77,6 @@ All passwords hashed using **bcrypt** before database storage.
          ├── App.jsx
          └── main.jsx
 
-------------------------------------------------------------------------
-
 ## 🛣 API Routes
 
 ### Authentication
@@ -104,8 +92,6 @@ All passwords hashed using **bcrypt** before database storage.
 -   PUT `/api/events/:id` *(moderators)*
 -   DELETE `/api/events/:id` *(moderators)*
 
-------------------------------------------------------------------------
-
 ## 🧑‍🤝‍🧑 User Roles
 
 ### User
@@ -119,8 +105,6 @@ All passwords hashed using **bcrypt** before database storage.
 -   Add, edit, delete events\
 -   Access moderator‑only UI buttons
 
-------------------------------------------------------------------------
-
 ## 🎨 UI Features
 
 -   Hover overlays on desktop\
@@ -128,8 +112,6 @@ All passwords hashed using **bcrypt** before database storage.
 -   Smooth "Load More" pagination\
 -   PixelBlast background animation\
 -   Clean navigation with profile dropdown
-
-------------------------------------------------------------------------
 
 ## 🔧 Deployment
 
@@ -150,15 +132,11 @@ Build & start:
     npm install
     npm start
 
-------------------------------------------------------------------------
-
 ## 📬 Email Notifications
 
 Users following event categories automatically receive email
 notifications using: - Nodemailer\
 - Gmail SMTP
-
-------------------------------------------------------------------------
 
 ## 📦 Local Setup
 
@@ -178,15 +156,11 @@ Clone repository:
     npm install
     npm run dev
 
-------------------------------------------------------------------------
-
 ## 🧭 Future Additions
 
 -   Filter directly on Home page\
 -   Push notifications\
 -   User avatars & extended profiles
-
-------------------------------------------------------------------------
 
 ## 🪐 License
 

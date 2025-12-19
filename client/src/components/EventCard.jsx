@@ -5,49 +5,38 @@ import { api } from "../services/api";
 
 export default function EventCard({ event }) {
   const { user } = useAuth();
-  const {
-    _id,
-    title,
-    date,
-    time,
-    imageUrl,
-    category,
-    description,
-    eventLink
-  } = event;
 
-  // 👇 detect mobile
+  const { _id, title, date, time, imageUrl, category, description, eventLink } = event;
+
+  // Detect mobile device
   const isMobile = window.innerWidth <= 768;
 
-  // 👇 controls whether actions are visible on mobile
+  // Whether the action overlay is visible on mobile
   const [showActions, setShowActions] = useState(false);
 
-  // 👇 click outside to close actions (mobile only)
+  // Tap outside to close on mobile
   useEffect(() => {
     if (!isMobile || !showActions) return;
 
-    const handleClickOutside = (e) => {
+    const handleOutside = (e) => {
       if (!e.target.closest(`#event-${_id}`)) {
         setShowActions(false);
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [showActions, isMobile]);
+    document.addEventListener("click", handleOutside);
+    return () => document.removeEventListener("click", handleOutside);
+  }, [showActions, isMobile, _id]);
 
   return (
     <article
       id={`event-${_id}`}
-      className={`event-card ${showActions ? "show-actions" : ""}`}
+      className={`event-card ${showActions ? "mobile-show" : ""}`}
       tabIndex="0"
       onClick={() => {
-        if (isMobile) {
-          // first tap: reveal buttons only
-          if (!showActions) {
-            setShowActions(true);
-            return;
-          }
+        if (isMobile && !showActions) {
+          // First tap: show overlay only
+          setShowActions(true);
         }
       }}
     >
@@ -62,12 +51,12 @@ export default function EventCard({ event }) {
 
       {/* META */}
       <div className="event-meta">
-        <h3 id={`title-${_id}`} className="event-title">{title}</h3>
+        <h3 className="event-title">{title}</h3>
         <div className="event-info">{date} • {time}</div>
         <div className="event-subject">{category}</div>
       </div>
 
-      {/* DESCRIPTION */}
+      {/* OVERLAY DESCRIPTION + BUTTONS */}
       <div className="event-description">
         <div className="desc-container">
           <div className="desc-inner">
@@ -75,8 +64,8 @@ export default function EventCard({ event }) {
           </div>
         </div>
 
-        {/* ACTIONS */}
         <div className="desc-actions">
+          {/* Moderator only actions */}
           {user?.role === "moderator" && (
             <div className="moderator-actions">
               <button
@@ -103,6 +92,7 @@ export default function EventCard({ event }) {
             </div>
           )}
 
+          {/* Event link */}
           {eventLink && (
             <button
               className="join-btn"

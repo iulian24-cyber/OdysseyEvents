@@ -136,7 +136,7 @@ Build & start:
 
 Users following event categories automatically receive email
 notifications using: - Nodemailer\
-- Gmail SMTP
+- Resend
 
 ## 📦 Local Setup
 

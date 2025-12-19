@@ -72,8 +72,10 @@ All passwords hashed using **bcrypt** before database storage.
 
     server/
      └── src/
+         ├── config/
          ├── routes/
          ├── controllers/
+         ├── middleware/
          ├── models/
          ├── utils/
          ├── app.js
@@ -87,6 +89,7 @@ All passwords hashed using **bcrypt** before database storage.
          ├── context/
          ├── pages/
          ├── assets/
+         ├── services/
          ├── App.jsx
          └── main.jsx
 

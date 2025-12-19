@@ -134,28 +134,36 @@ function CreateEvent({ editId }) {
     }
   };
 
+    // Detect mobile device (simple + effective)
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+    navigator.userAgent
+  ) || window.innerWidth < 768;
+
   return (
     <div className="create-event-page">
-      <PixelBlast
-        variant="triangle"
-        pixelSize={15}
-        color="#4100a9"
-        patternScale={25}
-        patternDensity={1.2}
-        pixelSizeJitter={0.5}
-        enableRipples
-        rippleSpeed={0.4}
-        rippleThickness={0.12}
-        rippleIntensityScale={1.5}
-        liquid
-        liquidStrength={0.12}
-        liquidRadius={1.2}
-        liquidWobbleSpeed={5}
-        speed={0.6}
-        edgeFade={0.1}
-        transparent
-        className="home-pixelblast"
-      />
+      {!isMobile && (
+        <PixelBlast
+          variant="triangle"
+          pixelSize={15}
+          color="#4100a9"
+          patternScale={25}
+          patternDensity={1.2}
+          pixelSizeJitter={0.5}
+          enableRipples
+          rippleSpeed={0.4}
+          rippleThickness={0.12}
+          rippleIntensityScale={1.5}
+          liquid
+          liquidStrength={0.12}
+          liquidRadius={1.2}
+          liquidWobbleSpeed={5}
+          speed={0.6}
+          edgeFade={0.1}
+          transparent
+          className="home-pixelblast"
+        />
+      )}
+
     <div className="nav_bar">
         <div className="logo" onClick={() => (window.location.hash = "#/home")}>
           <img src={logo} alt="OdysseyEvents" />

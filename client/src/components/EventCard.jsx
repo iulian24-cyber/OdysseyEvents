@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "../pages/Home.css";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
 
 export default function EventCard({ event }) {
   const { user } = useAuth();
-
   const {
     _id,
     title,
@@ -17,20 +16,45 @@ export default function EventCard({ event }) {
     eventLink
   } = event;
 
+  // 👇 detect mobile
+  const isMobile = window.innerWidth <= 768;
+
+  // 👇 controls whether actions are visible on mobile
+  const [showActions, setShowActions] = useState(false);
+
+  // 👇 click outside to close actions (mobile only)
+  useEffect(() => {
+    if (!isMobile || !showActions) return;
+
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(`#event-${_id}`)) {
+        setShowActions(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [showActions, isMobile]);
+
   return (
     <article
-      className="event-card"
+      id={`event-${_id}`}
+      className={`event-card ${showActions ? "show-actions" : ""}`}
       tabIndex="0"
-      aria-labelledby={`title-${_id}`}
+      onClick={() => {
+        if (isMobile) {
+          // first tap: reveal buttons only
+          if (!showActions) {
+            setShowActions(true);
+            return;
+          }
+        }
+      }}
     >
       {/* IMAGE */}
       <div className="event-image">
         {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={title}
-            loading="lazy"
-          />
+          <img src={imageUrl} alt={title} loading="lazy" />
         ) : (
           <div className="placeholder">Image</div>
         )}
@@ -38,12 +62,8 @@ export default function EventCard({ event }) {
 
       {/* META */}
       <div className="event-meta">
-        <h3 id={`title-${_id}`} className="event-title">
-          {title}
-        </h3>
-        <div className="event-info">
-          {date} • {time}
-        </div>
+        <h3 id={`title-${_id}`} className="event-title">{title}</h3>
+        <div className="event-info">{date} • {time}</div>
         <div className="event-subject">{category}</div>
       </div>
 
@@ -55,6 +75,7 @@ export default function EventCard({ event }) {
           </div>
         </div>
 
+        {/* ACTIONS */}
         <div className="desc-actions">
           {user?.role === "moderator" && (
             <div className="moderator-actions">
@@ -73,7 +94,6 @@ export default function EventCard({ event }) {
                 onClick={async (e) => {
                   e.stopPropagation();
                   if (!window.confirm("Delete this event?")) return;
-
                   await api(`/events/${_id}`, { method: "DELETE" });
                   window.location.reload();
                 }}
@@ -83,7 +103,6 @@ export default function EventCard({ event }) {
             </div>
           )}
 
-          {/* ✅ EVENT LINK — ONLY IF PROVIDED */}
           {eventLink && (
             <button
               className="join-btn"

@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --env-file=process.env src/index.js"
-    "start": "node --env-file=process.env src/index.js"
+    "start": "node src/index.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

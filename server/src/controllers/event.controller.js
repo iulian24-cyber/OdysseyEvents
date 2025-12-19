@@ -1,4 +1,7 @@
 import Event from "../models/Event.js";
+import User from "../models/User.js";
+import cloudinary from "../utils/cloudinary.js";
+import { sendEmail } from "../utils/mailer.js";
 
 /* =======================
    GET EVENTS (with filters)
@@ -9,15 +12,12 @@ export const getEvents = async (req, res) => {
 
     const filter = {};
 
-    // 🔑 CATEGORY FILTER (For You)
     if (categories) {
-      filter.category = {
-        $in: categories.split(",")
-      };
+      filter.category = { $in: categories.split(",") };
     }
 
     const events = await Event.find(filter)
-      .sort({ date: 1 }) // upcoming first
+      .sort({ date: 1 })
       .skip((page - 1) * limit)
       .limit(Number(limit));
 
@@ -29,7 +29,7 @@ export const getEvents = async (req, res) => {
 };
 
 /* =======================
-   CREATE EVENT
+   CREATE EVENT + EMAIL USERS
 ======================= */
 export const createEvent = async (req, res) => {
   try {
@@ -40,9 +40,11 @@ export const createEvent = async (req, res) => {
       description,
       location,
       category,
-      eventLink,
-      imageUrl
+      eventLink
     } = req.body;
+
+    // Cloudinary URL
+    const imageUrl = req.file?.path || "";
 
     const event = await Event.create({
       title,
@@ -52,7 +54,36 @@ export const createEvent = async (req, res) => {
       location,
       category,
       eventLink: eventLink || "",
-      imageUrl: imageUrl || ""
+      imageUrl
+    });
+
+    /* =======================
+       📧 SEND EMAILS TO USERS
+    ======================== */
+
+    const interestedUsers = await User.find({
+      preferredCategories: category
+    });
+
+    interestedUsers.forEach((u) => {
+      sendEmail({
+        to: u.email,
+        subject: `New ${category} Event: ${title}`,
+        html: `
+          <h2>${title}</h2>
+          <p><b>Date:</b> ${date}</p>
+          <p><b>Time:</b> ${time}</p>
+          <p><b>Location:</b> ${location}</p>
+          <p>${description}</p>
+          ${
+            eventLink
+              ? `<p><a href="${eventLink}" target="_blank">Check out event</a></p>`
+              : ""
+          }
+          <br/>
+          <small>You received this because you follow <b>${category}</b> events.</small>
+        `
+      });
     });
 
     res.status(201).json(event);
@@ -63,19 +94,45 @@ export const createEvent = async (req, res) => {
 };
 
 /* =======================
-   UPDATE EVENT
+   UPDATE EVENT (replace image)
 ======================= */
 export const updateEvent = async (req, res) => {
   try {
-    const event = await Event.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const event = await Event.findById(req.params.id);
 
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
+
+    const {
+      title,
+      date,
+      time,
+      description,
+      location,
+      category,
+      eventLink
+    } = req.body;
+
+    event.title = title;
+    event.date = date;
+    event.time = time;
+    event.description = description;
+    event.location = location;
+    event.category = category;
+    event.eventLink = eventLink;
+
+    // 🔥 NEW IMAGE UPLOADED → replace old one
+    if (req.file) {
+      if (event.imageUrl) {
+        const publicId = event.imageUrl.split("/").slice(-1)[0].split(".")[0];
+        await cloudinary.uploader.destroy(`odyssey-events/${publicId}`);
+      }
+
+      event.imageUrl = req.file.path;
+    }
+
+    await event.save();
 
     res.json(event);
   } catch (err) {
@@ -85,15 +142,23 @@ export const updateEvent = async (req, res) => {
 };
 
 /* =======================
-   DELETE EVENT
+   DELETE EVENT (remove image)
 ======================= */
 export const deleteEvent = async (req, res) => {
   try {
-    const event = await Event.findByIdAndDelete(req.params.id);
+    const event = await Event.findById(req.params.id);
 
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
+
+    // 🔥 delete image from Cloudinary
+    if (event.imageUrl) {
+      const publicId = event.imageUrl.split("/").slice(-1)[0].split(".")[0];
+      await cloudinary.uploader.destroy(`odyssey-events/${publicId}`);
+    }
+
+    await event.deleteOne();
 
     res.json({ message: "Event deleted" });
   } catch (err) {

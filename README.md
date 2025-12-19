@@ -1,251 +1,197 @@
-🌌 OdysseyEvents
-A modern MERN web application for event discovery, personalization & moderation.
-<p align="center"> <img src="https://img.shields.io/badge/MERN-Stack-3C873A?style=for-the-badge&logo=mongodb&logoColor=white" /> <img src="https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react" /> <img src="https://img.shields.io/badge/Node.js-22-green?style=for-the-badge&logo=node.js&logoColor=white" /> <img src="https://img.shields.io/badge/Express.js-5-black?style=for-the-badge&logo=express" /> <img src="https://img.shields.io/badge/MongoDB-6-brightgreen?style=for-the-badge&logo=mongodb" /> </p> <p align="center"> <img src="https://img.shields.io/badge/Cloudinary-Image_Uploads-blue?style=flat-square&logo=cloudinary" /> <img src="https://img.shields.io/badge/Nodemailer-Email_Notifications-yellow?style=flat-square&logo=mail.ru" /> <img src="https://img.shields.io/badge/Render-Deployment-blueviolet?style=flat-square&logo=render" /> </p>
+# 🌌 OdysseyEvents -- MERN Web Application
 
-📖 Table of Contents
+A modern, responsive event‑browsing platform built with the MERN stack
+(MongoDB, Express, React, Node.js) and deployed on Render.
 
-✨ Features
+------------------------------------------------------------------------
 
-🛠️ Tech Stack
+## 🚀 Overview
 
-🏗️ Architecture (MERN)
+OdysseyEvents allows users to explore upcoming events while moderators
+can create and manage them.\
+Features include authentication, category filtering, event overlays, and
+mobile responsiveness.
 
-📁 Project Structure
+------------------------------------------------------------------------
 
-🔐 Authentication & Security
+## 🧩 Tech Stack
 
-🧠 User Roles
+### **Frontend**
 
-⚙️ Environment Variables
+-   React + Vite\
+-   Context API authentication\
+-   WebGL PixelBlast background\
+-   Responsive UI\
+-   Hosted as a Render Static Site
 
-🌐 Deployment (Render)
+### **Backend**
 
-🧪 API Testing
+-   Node.js + Express\
+-   REST API\
+-   JWT Authentication\
+-   Multer + Cloudinary image uploads\
+-   Nodemailer email notifications\
+-   Hosted as a Render Web Service
 
-📸 Screenshots (optional)
+### **Database**
 
-🤝 Contributors
+-   MongoDB Atlas\
+-   Mongoose models
 
-📜 License
+------------------------------------------------------------------------
 
-✨ Features
-👥 User Features
+## 🔐 Authentication & Security
 
-Secure authentication (JWT)
+### Password Hashing
 
-Personal preferences (follow categories)
+All passwords hashed using **bcrypt** before database storage.
 
-"For You" tailored event feed
+### JWT Tokens
 
-Browse & explore events
+-   Short‑lived access tokens\
+-   Sent in Authorization header\
+-   Verified on every protected route
 
-Mobile-ready interface
+### Environment Variables
 
-Event external link preview
+    VITE_API_URL=
+    MONGO_URI=
+    JWT_SECRET=
+    CLOUDINARY_CLOUD_NAME=
+    CLOUDINARY_API_KEY=
+    CLOUDINARY_API_SECRET=
+    MAIL_USER=
+    MAIL_PASS=
+    CORS_ORIGIN=
 
-Smooth event card UI
+------------------------------------------------------------------------
 
-🛡️ Moderator Features
+## 🗂 Project Structure
 
-Create events
+### Backend
 
-Edit event details
+    server/
+     └── src/
+         ├── routes/
+         ├── controllers/
+         ├── models/
+         ├── utils/
+         ├── app.js
+         └── index.js
 
-Delete events
+### Frontend
 
-Cloudinary image uploads
+    client/
+     └── src/
+         ├── components/
+         ├── context/
+         ├── pages/
+         ├── assets/
+         ├── App.jsx
+         └── main.jsx
 
-Email notifications sent to followers
+------------------------------------------------------------------------
 
-🎨 Frontend Magic
+## 🛣 API Routes
 
-PixelBlast (Three.js shader effect)
+### Authentication
 
-Auto-disabled on mobile for performance
+-   POST `/api/auth/register`
+-   POST `/api/auth/login`
+-   GET `/api/auth/me`
 
-Smooth scrolling + preserved scroll position
+### Events
 
-Modern component-based UI
+-   GET `/api/events`
+-   POST `/api/events` *(moderators)*
+-   PUT `/api/events/:id` *(moderators)*
+-   DELETE `/api/events/:id` *(moderators)*
 
-🛠️ Tech Stack
-Layer	Technologies Used
-Frontend	React, Vite, CSS3, Three.js, PostProcessing
-Backend	Node.js, Express.js
-Database	MongoDB, Mongoose
-Auth	JWT, bcrypt
-File Uploads	Multer, Cloudinary
-Emails	Nodemailer
-Deployment	Render (Static + Web Service)
-🏗️ Architecture (MERN)
-+----------------------------+
-|         Frontend           |
-|        (React + Vite)      |
-+-------------+--------------+
-              |
-              | REST API Calls
-              v
-+----------------------------+
-|         Backend            |
-|      Node.js + Express     |
-+-------------+--------------+
-              |
-              | Mongoose ORM
-              v
-+----------------------------+
-|         MongoDB            |
-|      Cloud-Hosted DB       |
-+----------------------------+
+------------------------------------------------------------------------
 
-📁 Project Structure
-Backend (/server)
-server/
- ├── src/
- │   ├── controllers/
- │   ├── routes/
- │   ├── models/
- │   ├── middleware/
- │   ├── utils/
- │   └── index.js
- ├── package.json
- └── .env
+## 🧑‍🤝‍🧑 User Roles
 
-Frontend (/client)
-client/
- ├── src/
- │   ├── components/
- │   ├── context/
- │   ├── pages/
- │   ├── services/
- │   └── main.jsx
- ├── public/
- ├── .env
- └── package.json
+### User
 
-🔐 Authentication & Security
-🔒 Password Hashing
+-   Browse events\
+-   Filter by followed categories\
+-   Open event links
 
-Uses bcrypt
+### Moderator
 
-Unique salt per user
+-   Add, edit, delete events\
+-   Access moderator‑only UI buttons
 
-No plaintext password stored anywhere
+------------------------------------------------------------------------
 
-🔑 JWT Tokens
+## 🎨 UI Features
 
-Payload contains:
+-   Hover overlays on desktop\
+-   Tap‑based reveal on mobile\
+-   Smooth "Load More" pagination\
+-   PixelBlast background animation\
+-   Clean navigation with profile dropdown
 
-{
-  "userId": "mongo-id",
-  "role": "user | moderator"
-}
+------------------------------------------------------------------------
 
-🛡️ Protected Routes
+## 🔧 Deployment
 
-Express middleware enforces:
+### Frontend (Render Static Site)
 
-Token existence
+Build command:
 
-Token validity
+    npm run build
 
-User ownership
+Publish directory:
 
-Moderator permissions (create, edit, delete)
+    dist
 
-🌍 Strict CORS
+### Backend (Render Web Service)
 
-Allowed origins:
+Build & start:
 
-[
-  "http://localhost:5173",
-  "https://yourfrontend.onrender.com"
-]
+    npm install
+    npm start
 
-🧠 User Roles
-👤 User
+------------------------------------------------------------------------
 
-Browse events
+## 📬 Email Notifications
 
-Filter events
+Users following event categories automatically receive email
+notifications using: - Nodemailer\
+- Gmail SMTP
 
-Access personalized feed
+------------------------------------------------------------------------
 
-Open external event URLs
+## 📦 Local Setup
 
-🛠️ Moderator
+Clone repository:
 
-Everything a user can do, plus:
+    git clone https://github.com/your-repo/OdysseyEvents.git
 
-Create event
+### Frontend
 
-Edit event
+    cd client
+    npm install
+    npm run dev
 
-Delete event
+### Backend
 
-Upload images
+    cd server
+    npm install
+    npm run dev
 
-Trigger email notifications
+------------------------------------------------------------------------
 
-⚙️ Environment Variables
-Backend (server/.env)
-MONGO_URI=
-JWT_SECRET=
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-MAIL_USER=
-MAIL_PASS=
-CORS_ORIGIN=https://yourfrontend.onrender.com
+## 🧭 Future Additions
 
-Frontend (client/.env)
-VITE_API_URL=https://yourbackend.onrender.com/api
+-   Search system\
+-   Push notifications\
+-   PWA version\
+-   User avatars & extended profiles
 
-🌐 Deployment (Render)
-Frontend (Static Site)
+------------------------------------------------------------------------
 
-✔ Build command:
+## 🪐 License
 
-npm run build
-
-
-✔ Publish directory:
-
-dist
-
-Backend (Web Service)
-
-✔ Build command:
-
-npm install
-
-
-✔ Start command:
-
-node src/index.js
-
-
-✔ Add all .env values in Render Dashboard.
-
-🧪 API Testing (Postman)
-🔐 Auth
-Method	Endpoint	Description
-POST	/api/auth/register	Create account
-POST	/api/auth/login	Login & get token
-📅 Events
-Method	Endpoint	Description
-GET	/api/events	Get events
-POST	/api/events	Create event (moderator only)
-PATCH	/api/events/:id	Edit event
-DELETE	/api/events/:id	Remove event
-📸 Screenshots (Optional Placeholder)
-Add your images here:
-![Home Page](./assets/home.png)
-![Event Card](./assets/event-card.png)
-
-🤝 Contributors
-
-Iulian & Team
-Full-stack development • Architecture • Deployment • UI/UX
-
-📜 License
-
-MIT License
+MIT License © OdysseyEvents Team

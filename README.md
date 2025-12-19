@@ -1,6 +1,6 @@
 ## 🥥 App live on Render
 
-Acces our app via https://odysseyevents.onrender.com/
+Access our app via https://odysseyevents.onrender.com/
 
 # 🌌 OdysseyEvents -- MERN Web Application
 
@@ -10,33 +10,32 @@ A modern, responsive event‑browsing platform built with the MERN stack
 ## 🚀 Overview
 
 OdysseyEvents allows users to explore upcoming events while moderators
-can create and manage them.\
-Features include authentication, category filtering, event overlays, and
-mobile responsiveness.
+can create and manage them. Features include authentication, category
+filtering, event overlays, and mobile responsiveness. As well as a mail
+sender notification system.
 
 ## 🧩 Tech Stack
 
 ### **Frontend**
 
--   React + Vite\
--   Context API authentication\
--   WebGL PixelBlast background\
--   Responsive UI\
--   Hosted as a Render Static Site
+- React + Vite
+- Context API authentication
+- WebGL PixelBlast background
+- Responsive UI
+- Hosted as a Render Static Site
 
 ### **Backend**
 
--   Node.js + Express\
--   REST API\
--   JWT Authentication\
--   Multer + Cloudinary image uploads\
--   Nodemailer email notifications\
--   Hosted as a Render Web Service
+- Node.js + Express
+- REST API
+- JWT Authentication
+- Multer + Cloudinary image uploads
+- Hosted as a Render Web Service
 
 ### **Database**
 
--   MongoDB Atlas\
--   Mongoose models
+- MongoDB Atlas
+- Mongoose models
 
 ## 🔐 Authentication & Security
 
@@ -46,9 +45,9 @@ All passwords hashed using **bcrypt** before database storage.
 
 ### JWT Tokens
 
--   Short‑lived access tokens\
--   Sent in Authorization header\
--   Verified on every protected route
+- Short‑lived access tokens
+- Sent in Authorization header
+- Verified on every protected route
 
 ## 🗂 Project Structure
 
@@ -81,37 +80,37 @@ All passwords hashed using **bcrypt** before database storage.
 
 ### Authentication
 
--   POST `/api/auth/register`
--   POST `/api/auth/login`
--   GET `/api/auth/me`
+- POST `/api/auth/register`
+- POST `/api/auth/login`
+- GET `/api/auth/me`
 
 ### Events
 
--   GET `/api/events`
--   POST `/api/events` *(moderators)*
--   PUT `/api/events/:id` *(moderators)*
--   DELETE `/api/events/:id` *(moderators)*
+- GET `/api/events`
+- POST `/api/events` *(moderators)*
+- PUT `/api/events/:id` *(moderators)*
+- DELETE `/api/events/:id` *(moderators)*
 
 ## 🧑‍🤝‍🧑 User Roles
 
 ### User
 
--   Browse events\
--   Filter by followed categories\
--   Open event links
+- Browse events
+- Filter by followed categories
+- Open event links
 
 ### Moderator
 
--   Add, edit, delete events\
--   Access moderator‑only UI buttons
+- Add, edit, delete events
+- Access moderator‑only UI buttons
 
 ## 🎨 UI Features
 
--   Hover overlays on desktop\
--   Tap‑based reveal on mobile\
--   Smooth "Load More" pagination\
--   PixelBlast background animation\
--   Clean navigation with profile dropdown
+- Hover overlays on desktop
+- Tap‑based reveal on mobile
+- Smooth "Load More" pagination
+- PixelBlast background animation
+- Clean navigation with profile dropdown
 
 ## 🔧 Deployment
 
@@ -132,35 +131,15 @@ Build & start:
     npm install
     npm start
 
-## 📬 Email Notifications
+## 📬 Notifications
 
-Users following event categories automatically receive email
-notifications using: - Nodemailer\
-- Resend
-
-## 📦 Local Setup
-
-Clone repository:
-
-    git clone https://github.com/your-repo/OdysseyEvents.git
-
-### Frontend
-
-    cd client
-    npm install
-    npm run dev
-
-### Backend
-
-    cd server
-    npm install
-    npm run dev
+Event‑related notifications are now handled directly through Render‑deployed backend services, without any external email providers.
 
 ## 🧭 Future Additions
 
--   Filter directly on Home page\
--   Push notifications\
--   User avatars & extended profiles
+- Filter directly on Home page
+- Push notifications
+- User avatars & extended profiles
 
 ## 🪐 License
 

@@ -1,16 +1,35 @@
 import nodemailer from "nodemailer";
 
-// Use environment variables
+// ===============================
+//  CREATE TRANSPORTER (GMAIL)
+// ===============================
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.MAIL_USER,   // Your Gmail
-    pass: process.env.MAIL_PASS,   // App password
+    user: process.env.MAIL_USER,   // Gmail address
+    pass: process.env.MAIL_PASS,   // 16-digit App Password
   },
 });
 
+// ===============================
+//  VERIFY CONNECTION ON START
+// ===============================
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("❌ MAILER CONNECTION FAILED:");
+    console.error(error);
+  } else {
+    console.log("✅ MAILER READY TO SEND EMAILS");
+  }
+});
+
+// ===============================
+//  SEND EMAIL FUNCTION
+// ===============================
 export const sendEmail = async ({ to, subject, text, html }) => {
   try {
+    console.log("📧 Attempting to send email to:", to);
+
     await transporter.sendMail({
       from: `"OdysseyEvents" <${process.env.MAIL_USER}>`,
       to,
@@ -18,7 +37,9 @@ export const sendEmail = async ({ to, subject, text, html }) => {
       text,
       html,
     });
+
+    console.log("✅ Email sent successfully to:", to);
   } catch (err) {
-    console.error("Email Send Error:", err);
+    console.error("❌ Email Send Error:", err);
   }
 };

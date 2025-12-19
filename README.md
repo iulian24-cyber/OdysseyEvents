@@ -1,3 +1,2 @@
-# frontend OdysseyEvents
 # OdysseyEvents
 

@@ -29,7 +29,7 @@ export const getEvents = async (req, res) => {
 };
 
 /* =======================
-   CREATE EVENT + EMAIL USERS
+   CREATE EVENT + RESEND EMAILS
 ======================= */
 export const createEvent = async (req, res) => {
   try {
@@ -43,9 +43,9 @@ export const createEvent = async (req, res) => {
       eventLink
     } = req.body;
 
-    // Cloudinary URL
     const imageUrl = req.file?.path || "";
 
+    // Save event
     const event = await Event.create({
       title,
       date,
@@ -57,41 +57,54 @@ export const createEvent = async (req, res) => {
       imageUrl
     });
 
-    /* =======================
-       📧 SEND EMAILS TO USERS
-    ======================== */
+    /* ===============================
+       📧 SEND EMAILS (NON-BLOCKING)
+    =============================== */
 
     const interestedUsers = await User.find({
       preferredCategories: category
     });
 
-    interestedUsers.forEach((u) => {
-      sendEmail({
-        to: u.email,
-        subject: `New ${category} Event: ${title}`,
-        html: `
-          <h2>${title}</h2>
-          <p><b>Date:</b> ${date}</p>
-          <p><b>Time:</b> ${time}</p>
-          <p><b>Location:</b> ${location}</p>
-          <p>${description}</p>
-          ${
-            eventLink
-              ? `<p><a href="${eventLink}" target="_blank">Check out event</a></p>`
-              : ""
-          }
-          <br/>
-          <small>You received this because you follow <b>${category}</b> events.</small>
-        `
-      });
-    });
+    console.log(`📨 Will notify ${interestedUsers.length} users (Resend)`);
 
-    res.status(201).json(event);
+    // Run email sending AFTER response returns
+    setTimeout(() => {
+      interestedUsers.forEach(async (u) => {
+        try {
+          await sendEmail({
+            to: u.email,
+            subject: `New ${category} Event: ${title}`,
+            html: `
+              <h2>${title}</h2>
+              <p><b>Date:</b> ${date}</p>
+              <p><b>Time:</b> ${time}</p>
+              <p><b>Location:</b> ${location}</p>
+              <p>${description}</p>
+
+              ${
+                eventLink
+                  ? `<p><a href="${eventLink}" target="_blank">Check out event</a></p>`
+                  : ""
+              }
+
+              <br/>
+              <small>You receive this because you follow <b>${category}</b> events.</small>
+            `,
+          });
+        } catch (err) {
+          console.error(`❌ Error emailing ${u.email}:`, err);
+        }
+      });
+    }, 300);
+
+    return res.status(201).json(event);
+
   } catch (err) {
     console.error("CreateEvent error:", err);
     res.status(500).json({ message: "Failed to create event" });
   }
 };
+
 
 /* =======================
    UPDATE EVENT (replace image)

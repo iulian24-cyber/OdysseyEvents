@@ -13,26 +13,49 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const clearLogoutTimer = () => {
+    if (window.logoutTimer) {
+      clearTimeout(window.logoutTimer);
+      window.logoutTimer = null;
+    }
+  };
+
+  /* ==============================
+     LOGOUT — CLEAN & SIMPLE
+  =============================== */
   const logout = () => {
+    clearLogoutTimer();
+    localStorage.removeItem("token");
     setUser(null);
     setToken(null);
-    localStorage.removeItem("token");
+
+    // Just change the hash; App.jsx will handle route
     window.location.hash = "#/signin";
   };
 
-  const login = (token, user) => {
+  /* ==============================
+     LOGIN
+  =============================== */
+  const login = (token, userData) => {
     setToken(token);
-    setUser(user);
+    setUser(userData);
     localStorage.setItem("token", token);
 
     const expiry = getTokenExpiry(token);
     const timeout = expiry - Date.now();
-    setTimeout(logout, timeout);
+
+    if (timeout > 0) {
+      window.logoutTimer = setTimeout(logout, timeout);
+    }
   };
 
+  /* ==============================
+     RESTORE SESSION ON REFRESH
+  =============================== */
   useEffect(() => {
     const restoreSession = async () => {
       const storedToken = localStorage.getItem("token");
+
       if (!storedToken) {
         setLoading(false);
         return;
@@ -41,21 +64,23 @@ export const AuthProvider = ({ children }) => {
       try {
         const expiry = getTokenExpiry(storedToken);
         if (expiry < Date.now()) {
-          logout();
+          localStorage.removeItem("token");
           setLoading(false);
           return;
         }
 
         setToken(storedToken);
 
-        // ✅ FETCH FULL USER (includes preferredCategories)
+        // Fetch full user data
         const userData = await api("/auth/me");
         setUser(userData);
 
         const timeout = expiry - Date.now();
-        setTimeout(logout, timeout);
+        if (timeout > 0) {
+          window.logoutTimer = setTimeout(logout, timeout);
+        }
       } catch {
-        logout();
+        localStorage.removeItem("token");
       } finally {
         setLoading(false);
       }
@@ -63,7 +88,6 @@ export const AuthProvider = ({ children }) => {
 
     restoreSession();
   }, []);
-
 
   return (
     <AuthContext.Provider value={{ user, token, loading, login, logout }}>

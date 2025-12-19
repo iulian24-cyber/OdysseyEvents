@@ -133,7 +133,8 @@ Build & start:
 
 ## 📬 Notifications
 
-Event‑related notifications are now handled directly through Render‑deployed backend services, without any external email providers.
+Event‑related notifications are now handled directly through Render‑deployed backend services,
+with Resend API, using a custom domain.
 
 ## 🧭 Future Additions
 

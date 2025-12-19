@@ -360,6 +360,32 @@ body{
     height: fit-content;
 }
 
+/* ================================
+   MOBILE SAFE ACTION OVERLAY
+================================ */
+
+@media (max-width: 768px) {
+    /* Start hidden on mobile */
+    .event-card .event-description {
+        opacity: 0 !important;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+    }
+
+    /* When tapped */
+    .event-card.mobile-show .event-description {
+        opacity: 1 !important;
+        pointer-events: auto;
+    }
+
+    /* Disable hover behavior on mobile */
+    .event-card:hover .event-description {
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+}
+
+
 @media (max-width: 540px) {
     .logo{
         padding-left: 0;

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import "./SignInOrUp.css";
+import PixelBlast from "../components/PixelBlast";
+import logo from "../assets/logo.png";
 
 function SignIn() {
   const [identifier, setIdentifier] = useState("");
@@ -11,7 +13,7 @@ function SignIn() {
   const { login } = useAuth();
 
   const validate = () => {
-    if (!identifier) return "Email or username is required";
+    if (!identifier) return "Email or Username is required";
     if (!password) return "Password is required";
     return "";
   };
@@ -19,9 +21,9 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const v = validate();
-    if (v) {
-      setError(v);
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -37,6 +39,8 @@ function SignIn() {
       });
 
       login(res.token, res.user);
+
+      // Normal hash navigation – App.jsx will protect routes
       window.location.hash = "#/home";
     } catch (err) {
       setError(err.message || "Invalid credentials");
@@ -44,38 +48,68 @@ function SignIn() {
   };
 
   return (
-    <div className="signin-container">
-      <h2 className="signin-title">Sign In</h2>
+    <div className="auth-page">
+      <PixelBlast
+        variant="triangle"
+        pixelSize={15}
+        color="#4100a9"
+        patternScale={25}
+        patternDensity={1.2}
+        pixelSizeJitter={0.5}
+        enableRipples
+        rippleSpeed={0.4}
+        rippleThickness={0.12}
+        rippleIntensityScale={1.5}
+        liquid
+        liquidStrength={0.12}
+        liquidRadius={1.2}
+        liquidWobbleSpeed={5}
+        speed={0.6}
+        edgeFade={0.1}
+        transparent
+      />
 
-      <form onSubmit={handleSubmit} className="signin-form">
-        <label className="signin-label">
-          Email or Username
-          <input
-            className="signin-input"
-            type="text"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-            placeholder="email or username"
-          />
-        </label>
+      <div className="auth-content">
+        <div className="logo-container">
+          <img src={logo} alt="App Logo" className="auth-logo" />
+        </div>
 
-        <label className="signin-label">
-          Password
-          <input
-            className="signin-input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-          />
-        </label>
+        <div className="signin-container">
+          <h2 className="signin-title">Sign In to OdysseyEvents</h2>
 
-        {error && <div className="signin-error">{error}</div>}
+          <form onSubmit={handleSubmit} className="signin-form">
+            <label className="signin-label">
+              Email or Username
+              <input
+                className="signin-input"
+                type="text"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                placeholder="Email or Username"
+              />
+            </label>
 
-        <button type="submit" className="signin-button">
-          Sign In
-        </button>
-      </form>
+            <label className="signin-label">
+              Password
+              <input
+                className="signin-input"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+              />
+            </label>
+
+            {error && <div className="signin-error">{error}</div>}
+
+            <button type="submit" className="signin-button">
+              Sign In
+            </button>
+
+            <a href="#/signup">Don't have an account? Sign Up</a>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

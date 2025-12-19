@@ -3,33 +3,43 @@ import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
 import "./Home.css";
 import EventCard from "../components/EventCard";
+import PixelBlast from "../components/PixelBlast.jsx";
+import logo from "../assets/Odyssey Events Logo.svg";
 
 function Home() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
-  // 🔑 category state
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  // apply preferred categories ONCE when user loads
   useEffect(() => {
     if (user?.preferredCategories?.length) {
-      setSelectedCategories(user.preferredCategories);
+      setSelectedCategories([...user.preferredCategories]);
     }
   }, [user]);
 
-  // UI state
+  const isAllActive = selectedCategories.length === 0;
+
+  const isForYouActive =
+    user?.preferredCategories?.length > 0 &&
+    selectedCategories.length === user.preferredCategories.length &&
+    selectedCategories.every(cat =>
+      user.preferredCategories.includes(cat)
+    );
+
   const [open, setOpen] = useState(false);
   const [events, setEvents] = useState([]);
   const panelRef = useRef(null);
   const btnRef = useRef(null);
 
-  // pagination
   const [page, setPage] = useState(1);
   const pageSize = 5;
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // reset pagination when filters change
+  // scroll memory
+  const scrollPosRef = useRef(0);
+
+  // reset when switching category tabs
   useEffect(() => {
     setPage(1);
     setEvents([]);
@@ -38,11 +48,11 @@ function Home() {
 
   function handleLoadMore() {
     if (!loading && hasMore) {
-      setPage((prev) => prev + 1);
+      scrollPosRef.current = window.scrollY;
+      setPage(p => p + 1);
     }
   }
 
-  // close account panel on outside click
   useEffect(() => {
     function handleClickOutside(e) {
       if (
@@ -61,7 +71,6 @@ function Home() {
       document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
-  // load events
   useEffect(() => {
     async function loadPage(p) {
       setLoading(true);
@@ -79,7 +88,7 @@ function Home() {
         if (p === 1) {
           setEvents(data);
         } else {
-          setEvents((prev) => [...prev, ...data]);
+          setEvents(prev => [...prev, ...data]);
         }
 
         setHasMore(data.length === pageSize);
@@ -88,6 +97,11 @@ function Home() {
         setHasMore(false);
       } finally {
         setLoading(false);
+
+        // ✔ Smooth scroll restore without jump
+        requestAnimationFrame(() => {
+          window.scrollTo(0, scrollPosRef.current);
+        });
       }
     }
 
@@ -95,23 +109,45 @@ function Home() {
   }, [page, selectedCategories]);
 
   return (
-    <div className="home-container">
-      {/* NAV BAR */}
+    <div className="home-page">
+      <PixelBlast
+        variant="triangle"
+        pixelSize={15}
+        color="#4100a9"
+        patternScale={25}
+        patternDensity={1.2}
+        pixelSizeJitter={0.5}
+        enableRipples
+        rippleSpeed={0.4}
+        rippleThickness={0.12}
+        rippleIntensityScale={1.5}
+        liquid
+        liquidStrength={0.12}
+        liquidRadius={1.2}
+        liquidWobbleSpeed={5}
+        speed={0.6}
+        edgeFade={0.1}
+        transparent
+        className="home-pixelblast"
+      />
+
       <div className="nav_bar">
-        <div className="logo">OdysseyEvents</div>
+        <div className="logo" onClick={() => (window.location.hash = "#/home")}>
+          <img src={logo} alt="OdysseyEvents" />
+        </div>
 
         <div className="nav_buttons">
           <button
-            className="nav_button"
+            className={`nav_button ${isAllActive ? "active" : ""}`}
             onClick={() => setSelectedCategories([])}
           >
             All events
           </button>
 
           <button
-            className="nav_button"
+            className={`nav_button ${isForYouActive ? "active" : ""}`}
             onClick={() =>
-              setSelectedCategories(user?.preferredCategories || [])
+              setSelectedCategories([...(user?.preferredCategories || [])])
             }
           >
             For you
@@ -123,11 +159,12 @@ function Home() {
           ref={btnRef}
           aria-expanded={open}
           aria-controls="account-panel"
-          onClick={() => setOpen((v) => !v)}
-        />
+          onClick={() => setOpen(v => !v)}
+        >
+          {user?.username?.charAt(0).toUpperCase()}
+        </button>
       </div>
 
-      {/* ACCOUNT PANEL */}
       <div
         id="account-panel"
         ref={panelRef}
@@ -162,47 +199,41 @@ function Home() {
         <button
           className="account_item logout"
           onClick={() => {
-            window.location.hash = "#/signin";
+            setOpen(false);
+            logout();
           }}
         >
           Log out
         </button>
       </div>
 
-      {/* EVENTS */}
-      <div className="events-container">
-        {loading && <p>Loading events...</p>}
+      <div className="home-container">
+        <div className="events-container">
+          {loading && <p>Loading events...</p>}
 
-        {!loading && events.length === 0 && (
-          <div
-            style={{
-              textAlign: "center",
-              marginTop: 40,
-              color: "#aaa",
-            }}
-          >
-            <p>No events available yet.</p>
-            <p>Check back later or create one if you’re an admin.</p>
-          </div>
-        )}
-
-        {!loading && events.length > 0 && (
-          <div className="events-grid">
-            {events.map((ev) => (
-              <EventCard key={ev._id} event={ev} />
-            ))}
-          </div>
-        )}
-
-        <div style={{ textAlign: "center", margin: "18px 0" }}>
-          {hasMore && !loading && (
-            <button onClick={handleLoadMore} className="nav_button">
-              Load more
-            </button>
+          {!loading && events.length === 0 && (
+            <div style={{ textAlign: "center", marginTop: 40, color: "#aaa" }}>
+              <p>No events available yet.</p>
+              <p>Check back later or create one if you’re an admin.</p>
+            </div>
           )}
-          {!hasMore && (
-            <small style={{ color: "#aaa" }}>No more events</small>
+
+          {!loading && events.length > 0 && (
+            <div className="events-grid">
+              {events.map(ev => (
+                <EventCard key={ev._id} event={ev} />
+              ))}
+            </div>
           )}
+
+          <div style={{ textAlign: "center", margin: "18px 0" }}>
+            {hasMore && !loading && (
+              <button onClick={handleLoadMore} className="nav_button">
+                Load more
+              </button>
+            )}
+            {!hasMore && <small style={{ color: "#aaa" }}>No more events</small>}
+          </div>
         </div>
       </div>
     </div>

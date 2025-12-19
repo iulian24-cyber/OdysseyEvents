@@ -2,6 +2,8 @@ import "./CreateEvent.css";
 import "./Home.css";
 import React, { useState, useRef, useEffect } from "react";
 import { api } from "../services/api";
+import logo from "../assets/Odyssey Events Logo.svg";
+import PixelBlast from "../components/PixelBlast";
 
 function CreateEvent({ editId }) {
   const isEdit = Boolean(editId);
@@ -27,8 +29,9 @@ function CreateEvent({ editId }) {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // banner preview (still UI-only)
+  // banner preview + file
   const [bannerPreview, setBannerPreview] = useState("");
+  const [bannerFile, setBannerFile] = useState(null);
   const previewRef = useRef(null);
 
   // 🔁 LOAD EVENT WHEN EDITING
@@ -45,6 +48,7 @@ function CreateEvent({ editId }) {
         setCategory(event.category);
         setEventLink(event.eventLink || "");
         setBannerPreview(event.imageUrl || "");
+        setBannerFile(null);
       })
       .catch(() => {
         setError("Failed to load event");
@@ -54,6 +58,8 @@ function CreateEvent({ editId }) {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    setBannerFile(file);
 
     const url = URL.createObjectURL(file);
     if (previewRef.current) URL.revokeObjectURL(previewRef.current);
@@ -101,18 +107,23 @@ function CreateEvent({ editId }) {
     setError("");
 
     try {
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("date", date);
+      formData.append("time", time);
+      formData.append("description", description);
+      formData.append("location", location);
+      formData.append("category", category);
+      formData.append("eventLink", eventLink);
+
+      // ✅ only send image if user selected one
+      if (bannerFile) {
+        formData.append("image", bannerFile);
+      }
+
       await api(isEdit ? `/events/${editId}` : "/events", {
         method: isEdit ? "PUT" : "POST",
-        body: JSON.stringify({
-          title,
-          date,
-          time,
-          description,
-          location,
-          category,
-          eventLink,
-          imageUrl: bannerPreview || "https://placehold.co/600x400"
-        })
+        body: formData
       });
 
       window.location.hash = "#/home";
@@ -124,19 +135,41 @@ function CreateEvent({ editId }) {
   };
 
   return (
-    <div className="create-event-container">
-      <div className="nav_bar">
-        <div className="logo">OdysseyEvents</div>
-        <div className="as_nav_buttons">
+    <div className="create-event-page">
+      <PixelBlast
+        variant="triangle"
+        pixelSize={15}
+        color="#4100a9"
+        patternScale={25}
+        patternDensity={1.2}
+        pixelSizeJitter={0.5}
+        enableRipples
+        rippleSpeed={0.4}
+        rippleThickness={0.12}
+        rippleIntensityScale={1.5}
+        liquid
+        liquidStrength={0.12}
+        liquidRadius={1.2}
+        liquidWobbleSpeed={5}
+        speed={0.6}
+        edgeFade={0.1}
+        transparent
+        className="home-pixelblast"
+      />
+    <div className="nav_bar">
+        <div className="logo" onClick={() => (window.location.hash = "#/home")}>
+          <img src={logo} alt="OdysseyEvents" />
+        </div>
+        <div className="nav_buttons">
           <button
-            className="as_nav_button"
+            className="nav_button"
             onClick={() => (window.location.hash = "#/home")}
           >
             Home
           </button>
         </div>
       </div>
-
+    <div className="create-event-container">
       <h2 className="create-event-title">
         {isEdit ? "Edit Event" : "Create New Event"}
       </h2>
@@ -188,7 +221,11 @@ function CreateEvent({ editId }) {
         />
 
         <p>Banner Photo (optional)</p>
-        <input type="file" accept=".jpg,.png,.jpeg" onChange={handleFileChange} />
+        <input
+          type="file"
+          accept=".jpg,.png,.jpeg,.webp"
+          onChange={handleFileChange}
+        />
         {bannerPreview && (
           <img src={bannerPreview} alt="Preview" className="banner-preview" />
         )}
@@ -200,9 +237,7 @@ function CreateEvent({ editId }) {
               <button
                 type="button"
                 key={item}
-                className={`interest-btn ${
-                  category === item ? "selected" : ""
-                }`}
+                className={`interest-btn ${category === item ? "selected" : ""}`}
                 onClick={() => setCategory(item)}
               >
                 {item}
@@ -228,6 +263,7 @@ function CreateEvent({ editId }) {
         </button>
       </form>
     </div>
+  </div>
   );
 }
 

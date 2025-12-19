@@ -11,41 +11,91 @@ import AccountSettings from "./pages/AccountSettings";
 function App() {
   const { user, loading } = useAuth();
 
+  /* ============================
+     NORMALIZE ROUTE
+  ============================ */
   const normalizeHash = () => {
-    const h = window.location.hash;
-    if (!h) return user ? "/home" : "/signin";
-    return h.replace(/^#/, "");
+    const hash = window.location.hash.replace(/^#/, "");
+    const token = localStorage.getItem("token");
+
+    // If no hash → route based on token only
+    if (!hash) {
+      return token ? "/home" : "/signin";
+    }
+
+    return hash;
   };
 
   const [page, setPage] = useState(normalizeHash);
 
+  /* ============================
+     HASH LISTENER
+  ============================ */
   useEffect(() => {
-    const onHashChange = () => setPage(normalizeHash());
+    const onHashChange = () => {
+      const nextRoute = normalizeHash();
+
+      // If auth still loading → don't do redirects yet
+      if (loading) return;
+
+      // If logged in → block signin/signup entirely
+      if (user && (nextRoute === "/signin" || nextRoute === "/signup")) {
+        window.location.hash = "#/home";
+        return;
+      }
+
+      // If logged out → block protected routes
+      if (!user) {
+        const publicOnly = ["/signin", "/signup"];
+        if (!publicOnly.includes(nextRoute)) {
+          window.location.hash = "#/signin";
+          return;
+        }
+      }
+
+      setPage(nextRoute);
+    };
+
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
-  }, [user]);
+  }, [user, loading]);
 
-  // ⏳ Wait until auth is restored
+  /* ============================
+     WAIT FOR AUTH RESTORE
+  ============================ */
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  const publicPages = ["/signin", "/signup"];
-  const isPublic = publicPages.includes(page);
+  /* ============================
+     POST-LOAD ROUTE FIXES
+  ============================ */
 
-  // 🔐 Auth guard
-  if (!user && !isPublic) {
-    window.location.hash = "#/signin";
-    return <SignIn />;
+  // Logged-in users cannot visit SignIn or SignUp
+  if (user && (page === "/signin" || page === "/signup")) {
+    window.location.hash = "#/home";
+    return <Home />;
   }
 
-  // 🔒 Moderator-only pages (ACCESS control only)
+  // Logged-out users cannot visit protected pages
+  if (!user) {
+    const publicRoutes = ["/signin", "/signup"];
+
+    if (!publicRoutes.includes(page)) {
+      window.location.hash = "#/signin";
+      return <SignIn />;
+    }
+  }
+
+  // Moderator-only create route
   if (page === "/create" && user?.role !== "moderator") {
     window.location.hash = "#/home";
     return <Home />;
   }
 
-  // 🧭 ROUTING — NO ROLE-BASED REDIRECTS HERE
+  /* ============================
+     ROUTER
+  ============================ */
   switch (true) {
     case page === "/signin":
       return <SignIn />;
@@ -59,8 +109,10 @@ function App() {
     case page === "/create":
       return <CreateEvent />;
 
-    case page.startsWith("/edit/"):
-      return <CreateEvent editId={page.split("/edit/")[1]} />;
+    case page.startsWith("/edit/"): {
+      const editId = page.split("/edit/")[1];
+      return <CreateEvent editId={editId} />;
+    }
 
     case page === "/account":
       return <AccountSettings />;

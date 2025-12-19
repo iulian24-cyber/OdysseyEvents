@@ -2,7 +2,14 @@ p {
     margin: 0;
 }
 
+.create-event-page{
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
 .create-event-container {
+    margin: clamp(280px, 70vw, 900px) auto 0;
     margin-top: var(--nav-height);
     display: flex;
     width: 50%;
@@ -12,6 +19,8 @@ p {
     background-color: #222;
     min-height: 100vh;
     min-width: 70%;
+    position: relative;
+    z-index: 1;
 }
 
 .create-event-label {

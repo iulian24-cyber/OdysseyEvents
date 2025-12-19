@@ -13,14 +13,31 @@ html, body {
     box-sizing: inherit;
 }
 
+.home-page {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.home-pixelblast {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
 .home-container {
     display: flex;
     flex-direction: column;
+    margin: 0 auto;
     align-items: stretch;
-    width: 80%;
+    background: rgba(20, 20, 20, 0.411);
+    backdrop-filter: blur(4px);
+    width: clamp(280px, 70vw, 900px);
     box-sizing: border-box;
-    background-color: #333;
-    padding-top: var(--nav-height); /* reserve space for fixed nav */
+    padding-top: var(--nav-height); 
+    position: relative;
+    z-index: 1;
 }
 
 .nav_bar {
@@ -40,35 +57,64 @@ html, body {
 }
 
 .logo {
-    justify-self: start;
-    font-size: 1rem;
-    font-weight: bold;
+  display: flex;
+  align-items: center;
+  height: var(--nav-height);
+}
+
+.logo img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  transition: height 0.25s ease;
 }
 
 .nav_buttons {
-    display: flex;
-    justify-self: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     gap: 5vw;
 }
 
-.nav_button{
+
+.nav_button {
     display: flex;
-    width: 10vw;    
     justify-content: center;
+    align-items: center;
+    position: relative;  /* for the pseudo-element */
     background: #333;
     font-size: medium;
     font-weight: 600;
     text-shadow: #000000 0px 0px 18px;
-    transition: 0.5s;
+    transition: 0.3s color;
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
 }
 
+/* Hover effect */
 .nav_button:hover {
-    background: #5100d4;
-    border-color: #5100d4;
-    filter: drop-shadow(0 0 10px #5100d4);
-    transition: 0.5s;
-    cursor: pointer;
+    color: #fff;
+}
+
+/* Active button with animated underline */
+.nav_button::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0%;
+    height: 3px;
+    background: #4100a9; /* matches PixelBlast */
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav_button:hover::after,
+.nav_button.active::after {
+    width: 70%; /* underline grows */
 }
 
 .account_button {
@@ -140,11 +186,11 @@ html, body {
 }
 
 .events-container {
-    width: 100%;
+    width: 60%;
     max-width: var(--content-max-width);
     margin: 24px auto; 
     padding: 24px;
-    background-color: #333;
+    background: transparent;
     color: #fff;
     box-sizing: border-box;
     font-size: 24px;
@@ -154,6 +200,7 @@ html, body {
 
 .events-grid {
     display: grid;
+    background: transparent;
     grid-auto-rows: auto;
     gap: 6vh;
     width: 100%;
@@ -166,7 +213,7 @@ html, body {
 .event-card {
     position: relative;
     background: #222;
-    width: 60vw;
+    width: clamp(280px, 60vw, 600px);
     color: #ffffff;
     border-radius: 8px;
     overflow: hidden;
@@ -260,16 +307,33 @@ html, body {
 .desc-actions {
     flex: 0 0 auto;
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
+    align-items: center;
     width: 100%;
-    padding-top: 8px;
     gap: 8px;
+    box-sizing: border-box;
+}
+.moderator-actions{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.edit-btn,
+.delete-btn {
+    max-width: 100%;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .join-btn {
     background: var(--accent, #4100a9);
     color: #fff;
     border: none;
+    max-width: 100%;
+    white-space: nowrap;
+    flex-shrink: 0;
     padding: 10px 14px;
     border-radius: 8px;
     font-weight: 600;
@@ -297,6 +361,14 @@ body{
 }
 
 @media (max-width: 540px) {
+    .logo{
+        padding-left: 0;
+    }
+
+    .logo img {
+        height: 60%;
+    }
+
     .account_panel {
         right: 12px;
         width: 200px;
@@ -327,5 +399,15 @@ body{
     .event-description .desc-inner {
         max-height: 60%;
         font-size: 13px;
+    }
+    .desc-actions {
+        justify-content: center;
+    }
+
+    .join-btn,
+    .edit-btn,
+    .delete-btn {
+        width: 100%;
+        text-align: center;
     }
 }

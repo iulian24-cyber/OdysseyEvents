@@ -1,3 +1,9 @@
+## 🥥 App live on Render
+
+Acces our app via https://odysseyevents.onrender.com/
+
+------------------------------------------------------------------------
+
 # 🌌 OdysseyEvents -- MERN Web Application
 
 A modern, responsive event‑browsing platform built with the MERN stack

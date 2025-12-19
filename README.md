@@ -77,7 +77,7 @@ All passwords hashed using **bcrypt** before database storage.
          ├── App.jsx
          └── main.jsx
 
-## 🛣 API Routes
+## API Routes
 
 ### Authentication
 

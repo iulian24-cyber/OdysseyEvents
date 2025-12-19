@@ -58,18 +58,6 @@ All passwords hashed using **bcrypt** before database storage.
 -   Sent in Authorization header\
 -   Verified on every protected route
 
-### Environment Variables
-
-    VITE_API_URL=
-    MONGO_URI=
-    JWT_SECRET=
-    CLOUDINARY_CLOUD_NAME=
-    CLOUDINARY_API_KEY=
-    CLOUDINARY_API_SECRET=
-    MAIL_USER=
-    MAIL_PASS=
-    CORS_ORIGIN=
-
 ------------------------------------------------------------------------
 
 ## 🗂 Project Structure

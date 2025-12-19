@@ -188,9 +188,8 @@ Clone repository:
 
 ## 🧭 Future Additions
 
--   Search system\
+-   Filter directly on Home page\
 -   Push notifications\
--   PWA version\
 -   User avatars & extended profiles
 
 ------------------------------------------------------------------------

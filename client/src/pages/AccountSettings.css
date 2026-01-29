@@ -173,7 +173,7 @@
 .account_item:hover { background: rgba(0,0,0,0.04); }
 .account_item.logout { color: #883eff; }
 .account_panel hr { border: none; border-top: 1px solid #c4c4c4ff; margin: 6px 0; }
-.account_item.add { background: var(--accent, #4100a9); color: #fff; border-radius: 6px; }
+.account_item.add { background: transparent; color: inherit; border-radius: 6px; }
 
 @media (max-width: 540px) {
     .account_panel { right: 12px; width: 200px; top: 56px; }

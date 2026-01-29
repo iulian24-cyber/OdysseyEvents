@@ -24,3 +24,15 @@ mongoose (database)
 
 -to add LLM API-
 
+
+
+**backend facts**
+
+we use common js synthax not es modules (esm)
+
+env file ->
+
+**backend org**
+
+
+

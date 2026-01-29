@@ -4,6 +4,11 @@ import "./App.css";
 
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import SubmitEvent from "./pages/SubmitEvent";
+import ModeratorPending from "./pages/ModeratorPending";
+import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import CreateEvent from "./pages/CreateEvent";
 import AccountSettings from "./pages/AccountSettings";
@@ -44,9 +49,9 @@ function App() {
         return;
       }
 
-      // If logged out → block protected routes
+      // If logged out → block protected routes (but allow public auth pages)
       if (!user) {
-        const publicOnly = ["/signin", "/signup"];
+        const publicOnly = ["/signin", "/signup", "/forgot-password", "/reset-password"];
         if (!publicOnly.includes(nextRoute)) {
           window.location.hash = "#/signin";
           return;
@@ -79,7 +84,7 @@ function App() {
 
   // Logged-out users cannot visit protected pages
   if (!user) {
-    const publicRoutes = ["/signin", "/signup"];
+    const publicRoutes = ["/signin", "/signup", "/forgot-password", "/reset-password"];
 
     if (!publicRoutes.includes(page)) {
       window.location.hash = "#/signin";
@@ -89,6 +94,12 @@ function App() {
 
   // Moderator-only create route
   if (page === "/create" && user?.role !== "moderator") {
+    window.location.hash = "#/home";
+    return <Home />;
+  }
+
+  // Moderator-only pending review
+  if (page === "/moderator/pending" && user?.role !== "moderator") {
     window.location.hash = "#/home";
     return <Home />;
   }
@@ -103,8 +114,23 @@ function App() {
     case page === "/signup":
       return <SignUp />;
 
+    case page === "/forgot-password":
+      return <ForgotPassword />;
+
+    case page === "/reset-password":
+      return <ResetPassword />;
+
     case page === "/home":
       return <Home />;
+
+    case page === "/submit":
+      return <SubmitEvent />;
+
+    case page === "/contact":
+      return <Contact />;
+
+    case page === "/moderator/pending":
+      return <ModeratorPending />;
 
     case page === "/create":
       return <CreateEvent />;

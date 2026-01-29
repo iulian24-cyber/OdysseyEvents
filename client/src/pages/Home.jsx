@@ -107,29 +107,36 @@ function Home() {
 
     loadPage(page);
   }, [page, selectedCategories]);
-
+  
+    // Detect mobile device (simple + effective)
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+    navigator.userAgent
+  ) || window.innerWidth < 768;
+  
   return (
     <div className="home-page">
-      <PixelBlast
-        variant="triangle"
-        pixelSize={15}
-        color="#4100a9"
-        patternScale={25}
-        patternDensity={1.2}
-        pixelSizeJitter={0.5}
-        enableRipples
-        rippleSpeed={0.4}
-        rippleThickness={0.12}
-        rippleIntensityScale={1.5}
-        liquid
-        liquidStrength={0.12}
-        liquidRadius={1.2}
-        liquidWobbleSpeed={5}
-        speed={0.6}
-        edgeFade={0.1}
-        transparent
-        className="home-pixelblast"
-      />
+      {!isMobile && (
+        <PixelBlast
+          variant="triangle"
+          pixelSize={15}
+          color="#4100a9"
+          patternScale={25}
+          patternDensity={1.2}
+          pixelSizeJitter={0.5}
+          enableRipples
+          rippleSpeed={0.4}
+          rippleThickness={0.12}
+          rippleIntensityScale={1.5}
+          liquid
+          liquidStrength={0.12}
+          liquidRadius={1.2}
+          liquidWobbleSpeed={5}
+          speed={0.6}
+          edgeFade={0.1}
+          transparent
+          className="home-pixelblast"
+        />
+      )}
 
       <div className="nav_bar">
         <div className="logo" onClick={() => (window.location.hash = "#/home")}>
@@ -151,6 +158,20 @@ function Home() {
             }
           >
             For you
+          </button>
+
+          <button
+            className="nav_button"
+            onClick={() => (window.location.hash = "#/submit")}
+          >
+            Submit Event
+          </button>
+
+          <button
+            className="nav_button"
+            onClick={() => (window.location.hash = "#/contact")}
+          >
+            Contact
           </button>
         </div>
 
@@ -183,15 +204,27 @@ function Home() {
         </button>
 
         {user?.role === "moderator" && (
-          <button
-            className="account_item add"
-            onClick={() => {
-              window.location.hash = "#/create";
-              setOpen(false);
-            }}
-          >
-            Add event
-          </button>
+          <>
+            <button
+              className="account_item add"
+              onClick={() => {
+                window.location.hash = "#/create";
+                setOpen(false);
+              }}
+            >
+              Add event
+            </button>
+
+            <button
+              className="account_item add"
+              onClick={() => {
+                window.location.hash = "#/moderator/pending";
+                setOpen(false);
+              }}
+            >
+              Review submissions
+            </button>
+          </>
         )}
 
         <hr />

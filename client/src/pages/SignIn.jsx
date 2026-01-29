@@ -47,27 +47,36 @@ function SignIn() {
     }
   };
 
+  // Detect mobile device (simple + effective)
+  const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
+    navigator.userAgent
+  ) || window.innerWidth < 768;
+
+  
   return (
     <div className="auth-page">
-      <PixelBlast
-        variant="triangle"
-        pixelSize={15}
-        color="#4100a9"
-        patternScale={25}
-        patternDensity={1.2}
-        pixelSizeJitter={0.5}
-        enableRipples
-        rippleSpeed={0.4}
-        rippleThickness={0.12}
-        rippleIntensityScale={1.5}
-        liquid
-        liquidStrength={0.12}
-        liquidRadius={1.2}
-        liquidWobbleSpeed={5}
-        speed={0.6}
-        edgeFade={0.1}
-        transparent
-      />
+      {!isMobile && (
+        <PixelBlast
+          variant="triangle"
+          pixelSize={15}
+          color="#4100a9"
+          patternScale={25}
+          patternDensity={1.2}
+          pixelSizeJitter={0.5}
+          enableRipples
+          rippleSpeed={0.4}
+          rippleThickness={0.12}
+          rippleIntensityScale={1.5}
+          liquid
+          liquidStrength={0.12}
+          liquidRadius={1.2}
+          liquidWobbleSpeed={5}
+          speed={0.6}
+          edgeFade={0.1}
+          transparent
+          className="home-pixelblast"
+        />
+      )}
 
       <div className="auth-content">
         <div className="logo-container">
@@ -106,7 +115,13 @@ function SignIn() {
               Sign In
             </button>
 
-            <a href="#/signup">Don't have an account? Sign Up</a>
+            <div style={{ marginTop: "15px", textAlign: "center" }}>
+              <a href="#/signup">Don't have an account? Sign Up</a>
+              <br />
+              <a href="#/forgot-password" style={{ fontSize: "14px", marginTop: "8px", display: "block" }}>
+                Forgot password?
+              </a>
+            </div>
           </form>
         </div>
       </div>

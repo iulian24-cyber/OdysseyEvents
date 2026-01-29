@@ -1,13 +1,10 @@
-import "./CreateEvent.css";
-import "./Home.css";
 import React, { useState, useRef, useEffect } from "react";
 import { api } from "../services/api";
 import logo from "../assets/Odyssey Events Logo.svg";
 import PixelBlast from "../components/PixelBlast";
+import "./CreateEvent.css";
 
-function CreateEvent({ editId }) {
-  const isEdit = Boolean(editId);
-
+function SubmitEvent() {
   const categories = [
     "Music",
     "Sports",
@@ -29,31 +26,9 @@ function CreateEvent({ editId }) {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // banner preview + file
   const [bannerPreview, setBannerPreview] = useState("");
   const [bannerFile, setBannerFile] = useState(null);
   const previewRef = useRef(null);
-
-  // 🔁 LOAD EVENT WHEN EDITING
-  useEffect(() => {
-    if (!isEdit) return;
-
-    api(`/events/${editId}`)
-      .then((event) => {
-        setTitle(event.title);
-        setDate(event.date);
-        setTime(event.time);
-        setDescription(event.description);
-        setLocation(event.location);
-        setCategory(event.category);
-        setEventLink(event.eventLink || "");
-        setBannerPreview(event.imageUrl || "");
-        setBannerFile(null);
-      })
-      .catch(() => {
-        setError("Failed to load event");
-      });
-  }, [editId, isEdit]);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -116,25 +91,21 @@ function CreateEvent({ editId }) {
       formData.append("category", category);
       formData.append("eventLink", eventLink);
 
-      // ✅ only send image if user selected one
-      if (bannerFile) {
-        formData.append("image", bannerFile);
-      }
+      if (bannerFile) formData.append("image", bannerFile);
 
-      await api(isEdit ? `/events/${editId}` : "/events", {
-        method: isEdit ? "PUT" : "POST",
+      await api("/events/submit", {
+        method: "POST",
         body: formData
       });
 
       window.location.hash = "#/home";
     } catch (err) {
-      setError(err.message || "Failed to save event");
+      setError(err.message || "Failed to submit event");
     } finally {
       setSubmitting(false);
     }
   };
 
-    // Detect mobile device (simple + effective)
   const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
     navigator.userAgent
   ) || window.innerWidth < 768;
@@ -164,7 +135,7 @@ function CreateEvent({ editId }) {
         />
       )}
 
-    <div className="nav_bar">
+      <div className="nav_bar">
         <div className="logo" onClick={() => (window.location.hash = "#/home")}>
           <img src={logo} alt="OdysseyEvents" />
         </div>
@@ -177,102 +148,87 @@ function CreateEvent({ editId }) {
           </button>
         </div>
       </div>
-    <div className="create-event-container">
-      <h2 className="create-event-title">
-        {isEdit ? "Edit Event" : "Create New Event"}
-      </h2>
 
-      <form className="create-event-form" onSubmit={handleSubmit}>
-        <p>Event Name</p>
-        <input
-          className="create-event-input"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+      <div className="create-event-container">
+        <h2 className="create-event-title">Submit Event for Approval</h2>
 
-        <p>Date</p>
-        <input
-          type="date"
-          className="create-event-input"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
+        <form className="create-event-form" onSubmit={handleSubmit}>
+          <p>Event Name</p>
+          <input
+            className="create-event-input"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
 
-        <p>Time</p>
-        <input
-          className="create-event-input"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          placeholder="18:00"
-        />
+          <p>Date</p>
+          <input
+            type="date"
+            className="create-event-input"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
 
-        <p>Location</p>
-        <input
-          className="create-event-input"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
+          <p>Time</p>
+          <input
+            className="create-event-input"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            placeholder="18:00"
+          />
 
-        <p>Description</p>
-        <textarea
-          className="create-event-textarea"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          <p>Location</p>
+          <input
+            className="create-event-input"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          />
 
-        <p>Event link (optional)</p>
-        <input
-          className="create-event-input"
-          value={eventLink}
-          onChange={(e) => setEventLink(e.target.value)}
-          placeholder="https://example.com"
-        />
+          <p>Description</p>
+          <textarea
+            className="create-event-textarea"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
 
-        <p>Banner Photo (optional)</p>
-        <input
-          type="file"
-          accept=".jpg,.png,.jpeg,.webp"
-          onChange={handleFileChange}
-        />
-        {bannerPreview && (
-          <img src={bannerPreview} alt="Preview" className="banner-preview" />
-        )}
+          <p>Event link (optional)</p>
+          <input
+            className="create-event-input"
+            value={eventLink}
+            onChange={(e) => setEventLink(e.target.value)}
+            placeholder="https://example.com"
+          />
 
-        <p>Select category</p>
-        <div className="interest-box">
-          <div className="interest-buttons">
-            {categories.map((item) => (
-              <button
-                type="button"
-                key={item}
-                className={`interest-btn ${category === item ? "selected" : ""}`}
-                onClick={() => setCategory(item)}
-              >
-                {item}
-              </button>
-            ))}
+          <p>Banner Photo (optional)</p>
+          <input type="file" accept=".jpg,.png,.jpeg,.webp" onChange={handleFileChange} />
+          {bannerPreview && (
+            <img src={bannerPreview} alt="Preview" className="banner-preview" />
+          )}
+
+          <p>Select category</p>
+          <div className="interest-box">
+            <div className="interest-buttons">
+              {categories.map((item) => (
+                <button
+                  type="button"
+                  key={item}
+                  className={`interest-btn ${category === item ? "selected" : ""}`}
+                  onClick={() => setCategory(item)}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {error && <div className="signin-error">{error}</div>}
+          {error && <div className="signin-error">{error}</div>}
 
-        <button
-          type="submit"
-          className="create-event-submit-btn"
-          disabled={submitting}
-        >
-          {submitting
-            ? isEdit
-              ? "Updating…"
-              : "Creating…"
-            : isEdit
-            ? "Update Event"
-            : "Create Event"}
-        </button>
-      </form>
+          <button type="submit" className="create-event-submit-btn" disabled={submitting}>
+            {submitting ? "Submitting…" : "Submit for Approval"}
+          </button>
+        </form>
+      </div>
     </div>
-  </div>
   );
 }
 
-export default CreateEvent;
+export default SubmitEvent;

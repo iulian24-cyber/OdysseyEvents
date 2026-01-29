@@ -174,8 +174,8 @@ html, body {
 }
 
 .account_item.add {
-    background: var(--accent, #4100a9);
-    color: #fff;
+    background: transparent;
+    color: inherit;
     border-radius: 6px;
 }
 
@@ -359,6 +359,34 @@ html, body {
 body{
     height: fit-content;
 }
+
+/* ================================
+   FORCE MOBILE TAP TO SHOW OVERLAY
+================================ */
+@media (max-width: 768px) {
+
+    /* Disable desktop hover/focus effects */
+    .event-card:hover .event-description,
+    .event-card:focus .event-description,
+    .event-card:focus-within .event-description {
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* Start hidden */
+    .event-card .event-description {
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* Show when tapped (class added by JS) */
+    .event-card.mobile-show .event-description {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+    }
+}
+
+
 
 @media (max-width: 540px) {
     .logo{

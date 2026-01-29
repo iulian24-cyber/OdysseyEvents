@@ -3,7 +3,10 @@ import {
   getEvents,
   createEvent,
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  submitEvent,
+  getPendingEvents,
+  approveEvent
 } from "../controllers/event.controller.js";
 import { protect } from "../middleware/auth.middleware.js";
 import { moderatorOnly } from "../middleware/moderator.middleware.js";
@@ -17,7 +20,32 @@ const router = Router();
 ======================= */
 router.get("/", protect, getEvents);
 
-// 🔑 REQUIRED for Edit Event page
+/* =======================
+   SUBMIT (logged-in users)
+======================= */
+router.post(
+  "/submit",
+  protect,
+  upload.single("image"),
+  submitEvent
+);
+
+/* =======================
+   MODERATOR: view pending
+======================= */
+router.get("/pending", protect, moderatorOnly, getPendingEvents);
+
+/* =======================
+   MODERATOR: approve
+======================= */
+router.post(
+  "/:id/approve",
+  protect,
+  moderatorOnly,
+  approveEvent
+);
+
+// 🔑 REQUIRED for single event fetch (keep after fixed routes)
 router.get("/:id", protect, async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -33,7 +61,7 @@ router.get("/:id", protect, async (req, res) => {
 });
 
 /* =======================
-   CREATE
+   CREATE (moderator only)
 ======================= */
 router.post(
   "/",

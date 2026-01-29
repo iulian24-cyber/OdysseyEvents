@@ -16,6 +16,31 @@ const eventSchema = new mongoose.Schema({
   eventLink: {
     type: String,
     default: ""
+  },
+
+  // moderation / publishing
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "approved"
+  },
+  submittedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null
+  },
+  submittedAt: {
+    type: Date,
+    default: null
+  },
+  approvedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null
+  },
+  approvedAt: {
+    type: Date,
+    default: null
   }
 });
 
